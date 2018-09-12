@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfNFCProject"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800"
+        Title="MainWindow" Height="800" Width="450"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
          TextElement.FontWeight="Regular"
@@ -15,24 +15,19 @@
          Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}">
     <Grid>
-        <materialDesign:Card Padding="32" Margin="16,16,16,0">
+        <materialDesign:Card Padding="32" Margin="16,50,16,0">
             <TextBlock Style="{DynamicResource MaterialDesignTitleTextBlock}" HorizontalAlignment="Center" Text="Smart Card and NFC Admin"/>
         </materialDesign:Card>
-        <materialDesign:Card Padding="2" Margin="16,124,550,0" Height="54">
+        <materialDesign:Card Padding="2"  Height="54" Margin="28,211,28,0">
             <TextBlock Style="{DynamicResource MaterialDesignTextBlock}" x:Name="UID" Text="UID not Detected" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
         </materialDesign:Card>
-        <materialDesign:Card Padding="2" Margin="283,124,283,0" Height="54">
-            <TextBlock Style="{DynamicResource MaterialDesignTextBlock}" x:Name="readData" Text="No Data" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+        <materialDesign:Card Padding="2" Height="112" Margin="28,273,28,0">
+            <TextBlock Style="{DynamicResource MaterialDesignTextBlock}" x:Name="readData" Text="No Data" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20"></TextBlock>
         </materialDesign:Card>
-        <materialDesign:Card Padding="2" Margin="552,124,16,0" Height="54">
+        <materialDesign:Card Padding="2" Height="54" Margin="28,392,28,0">
             <TextBox x:Name="writeData" HorizontalAlignment="Center"  Width="201" Margin="10,14,9,12" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
         </materialDesign:Card>
-        <Button x:Name="bUID" Content="GET UID" HorizontalAlignment="Left" Margin="16,183,0,0" VerticalAlignment="Top" Width="218" Height="45" Click="bUID_Click"/>
-        <Button x:Name="bRead" Content="Read Data" HorizontalAlignment="Left" Margin="283,183,0,0" VerticalAlignment="Top" Width="218" Height="45" Click="bRead_Click"/>
-        <Button x:Name="bWrite" Content="Write Data" HorizontalAlignment="Left" Margin="552,183,0,0" VerticalAlignment="Top" Width="218" Height="45" Click="bWrite_Click"/>
-        <materialDesign:TransitioningContent OpeningEffect="{materialDesign:TransitionEffect ExpandIn}">
-            <TextBlock x:Name="statusMsg" HorizontalAlignment="Center" Margin="230,283,221,99" VerticalAlignment="Center" Width="341" TextAlignment="Center"/>
-        </materialDesign:TransitioningContent>
+        <Button x:Name="bWrite" Content="Write Data" HorizontalAlignment="Left" Margin="119,460,0,0" VerticalAlignment="Top" Width="218" Height="44" Click="bWrite_Click"/>
 
 
     </Grid>

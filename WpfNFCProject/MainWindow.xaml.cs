@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -37,6 +38,8 @@ namespace WpfNFCProject
             InitializeComponent();
             SelectDevice();
             establishContext();
+            Thread th = new Thread(getUID);
+            th.Start();
         }
 
         public void SelectDevice()
@@ -121,10 +124,7 @@ namespace WpfNFCProject
 
             if (retCode != Card.SCARD_S_SUCCESS)
             {
-                MessageBox.Show(Card.GetScardErrMsg(retCode), "Card not available", MessageBoxButton.OK, MessageBoxImage.Error);
-                connActive = false;
-                Console.WriteLine(retCode + "  " + Card.SCARD_S_SUCCESS);
-                return false;
+                connectCard();
             }
             return true;
         }
@@ -191,18 +191,15 @@ namespace WpfNFCProject
                 if (retCode != Card.SCARD_S_SUCCESS)
                 {
                     string msg = "Fail Writing Data";
-                    statusMsg.Text = msg.ToString();
                 }
                 else
                 {
                     string msg = "Success Writing Data";
-                    statusMsg.Text = msg.ToString();
                 }
             }
             else
             {
                 string msg = "FailAuthentication";
-                statusMsg.Text = msg.ToString();
             }
         }
 
@@ -254,24 +251,42 @@ namespace WpfNFCProject
             }
         }
 
-        private void bUID_Click(object sender, RoutedEventArgs e)
+        /*private void bUID_Click(object sender, RoutedEventArgs e)
         {
             if (connectCard())
             {
                 string cardUID = getcardUID();
                 UID.Text = cardUID;
-                string msg = "Success Reading UID";
-                statusMsg.Text = msg.ToString();
+            }
+        }*/
+
+        private void getUID()
+        {
+            Console.WriteLine("Thread GET UID starts");
+            if (connectCard())
+            {
+                string cardUID = getcardUID();
+                string data = verifyCard("5");
+
+                this.Dispatcher.Invoke((Action)(() =>
+                {
+                    UID.Text = cardUID;
+                    readData.Text = data.ToString();
+                }));
+
+                Thread th = new Thread(getUID);
+                th.Start();
+
             }
         }
-
+        
+        /*
         private void bRead_Click(object sender, RoutedEventArgs e)
         {
             string data = verifyCard("5");
             readData.Text = data.ToString();
-            string msg = "Success Reading Data";
-            statusMsg.Text = msg.ToString();
         }
+        */
 
         private void bWrite_Click(object sender, RoutedEventArgs e)
         {
@@ -362,7 +377,7 @@ namespace WpfNFCProject
                             if ((tmpStr).Trim() != "90 00")
                             {
                                 //MessageBox.Show("Return bytes are not acceptable.");
-                                return -202;
+                                // return -202;
                             }
 
                             break;
@@ -402,7 +417,7 @@ namespace WpfNFCProject
                 }
                 catch (IndexOutOfRangeException)
                 {
-                    return -200;
+                    // return -200;
                 }
             }
             return retCode;
