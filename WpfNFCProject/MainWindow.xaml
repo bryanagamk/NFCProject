@@ -28,6 +28,10 @@
             <TextBox x:Name="writeData" HorizontalAlignment="Center"  Width="201" Margin="10,14,9,12" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
         </materialDesign:Card>
         <Button x:Name="bWrite" Content="Write Data" HorizontalAlignment="Left" Margin="119,460,0,0" VerticalAlignment="Top" Width="218" Height="44" Click="bWrite_Click"/>
+        <materialDesign:Card Padding="2" Height="54" Margin="0,715,0,0">
+            
+        </materialDesign:Card>
+
 
 
     </Grid>

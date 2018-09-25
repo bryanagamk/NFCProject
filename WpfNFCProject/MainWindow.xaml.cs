@@ -13,12 +13,15 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using MySql.Data.MySqlClient;
+using System.Data;
 
 namespace WpfNFCProject
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
+    /// 
     public partial class MainWindow : Window
     {
         int retCode;
@@ -33,9 +36,15 @@ namespace WpfNFCProject
         public Card.SCARD_READERSTATE RdrState;
         public Card.SCARD_IO_REQUEST pioSendRequest;
 
+        private MySqlCommand perintah = null;
+        string konfigurasi = "Server=localhost;Port=3306;UID=root;PWD=;Database=nfc;SslMode=none";
+        MySqlConnection koneksi = new MySqlConnection();
+
         public MainWindow()
         {
             InitializeComponent();
+            koneksi.ConnectionString = konfigurasi;
+
             SelectDevice();
             establishContext();
             Thread th = new Thread(getUID);
@@ -263,6 +272,8 @@ namespace WpfNFCProject
         private void getUID()
         {
             Console.WriteLine("Thread GET UID starts");
+            long nrp;
+            String uuid;
             if (connectCard())
             {
                 string cardUID = getcardUID();
@@ -272,21 +283,77 @@ namespace WpfNFCProject
                 {
                     UID.Text = cardUID;
                     readData.Text = data.ToString();
+                    
+                    try
+                    {
+                        uuid = UID.Text;
+                        nrp = int.Parse(data.ToString());
+
+                        selectData(nrp, uuid);
+                        
+                    }
+                    catch(Exception e)
+                    {
+
+                    }
                 }));
+
+           
 
                 Thread th = new Thread(getUID);
                 th.Start();
-
+                
             }
         }
-        
-        /*
-        private void bRead_Click(object sender, RoutedEventArgs e)
+
+        public bool selectData(long nrp, String uuid)
         {
-            string data = verifyCard("5");
-            readData.Text = data.ToString();
+            DataSet ds = new DataSet();
+            try
+            {
+                koneksi.Open();
+                perintah = new MySqlCommand();
+                perintah.Connection = koneksi;
+                perintah.CommandType = CommandType.Text;
+                perintah.CommandText = "SELECT * FROM nfc_log WHERE nrp = " + nrp + "AND uuid=" + uuid;
+                MySqlDataAdapter mdap = new MySqlDataAdapter(perintah);
+                mdap.Fill(ds, "nfc_log");
+                koneksi.Close();
+            }
+            catch (MySqlException)
+            {
+            }
+            return ds;
+
         }
-        */
+
+        public void insertData(long nrp, String uuid)
+        {
+            koneksi.Open();
+            DataSet ds = new DataSet();
+            perintah = new MySqlCommand();
+            perintah.Connection = koneksi;
+            perintah.CommandType = System.Data.CommandType.Text;
+            
+            perintah.CommandText = "INSERT INTO nfc_log (nrp, uuid) values('"+nrp+ "', '" + uuid + "')";
+
+            perintah.ExecuteNonQuery();
+            koneksi.Close();
+        }
+
+        public void uodateData(long nrp, String uuid)
+        {
+            koneksi.Open();
+            DataSet ds = new DataSet();
+            perintah = new MySqlCommand();
+            perintah.Connection = koneksi;
+            perintah.CommandType = System.Data.CommandType.Text;
+
+            perintah.CommandText = "UPDATE nfc_log SET (nrp, uuid) values('" + nrp + "', '" + uuid + "')";
+
+            perintah.ExecuteNonQuery();
+            koneksi.Close();
+        }
 
         private void bWrite_Click(object sender, RoutedEventArgs e)
         {
